@@ -11,3 +11,6 @@ Is created just for practice. Basic idea is to represent Fasebook like applicati
 1. MemeHub.Services - This is where business logic is
 1. MemeHub.Tests - All tests
 1. MemeHub.ViewModels - All data models that app is going to use for it's presentations
+
+## Database
+![Database diagram](Isolated.png "Title")
