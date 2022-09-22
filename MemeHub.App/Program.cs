@@ -53,6 +53,10 @@ namespace MemeHub.App
                 endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
+                endpoints.MapAreaControllerRoute(
+                    name: "Administration", 
+                    areaName:"Admin", 
+                    pattern: "{area:exists}/{controller=home}/{action=index}/{id?}");
             })
             .UseAuthentication()
             .UseAuthorization();
