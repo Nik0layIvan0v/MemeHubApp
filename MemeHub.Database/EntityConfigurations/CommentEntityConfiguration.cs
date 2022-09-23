@@ -11,7 +11,7 @@
             commentBuilder.HasKey(comment => comment.Id);
 
             commentBuilder.Property(comment => comment.Id)
-                          .UseIdentityColumn<int>(0, 1);
+                          .UseIdentityColumn<int>(1, 1);
 
             commentBuilder.Property(comment => comment.Content)
                           .IsRequired(true);
@@ -24,7 +24,7 @@
                           .HasConstraintName("FK_Comments_Memes")
                           .HasForeignKey(meme => meme.MemeId)
                           .OnDelete(DeleteBehavior.Restrict)
-                          .IsRequired(false);
+                          .IsRequired(true);
 
             commentBuilder.HasOne(comment => comment.User)
                           .WithMany(user => user.Comments)

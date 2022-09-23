@@ -11,7 +11,7 @@
             likeBuilder.HasKey(like => like.Id);
 
             likeBuilder.Property(like => like.Id)
-                       .UseIdentityColumn<int>();
+                       .UseIdentityColumn<int>(1, 1);
 
             likeBuilder.Property(like => like.LikedAt)
                        .IsRequired(true);
@@ -25,7 +25,7 @@
                        .HasConstraintName("FK_Likes_Users")
                        .HasForeignKey(like => like.UserId)
                        .OnDelete(DeleteBehavior.Restrict)
-                       .IsRequired(true);
+                       .IsRequired(false);
 
             likeBuilder.HasOne(like => like.Meme)
                        .WithMany(meme => meme.Likes)

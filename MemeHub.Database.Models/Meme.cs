@@ -12,7 +12,7 @@
 
         public int Id { get; set; }
 
-        public DateTime CreatedAt {get; set; }
+        public DateTime CreatedAt { get; set; }
 
         [MaxLength(MaxTitleLength)]
         public string Title { get; set; }
@@ -22,6 +22,11 @@
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }
+        
+        public string UserId { get; set; }
+
+        public User User { get; set; }
+
 
         public int LabelId { get; set; }
 

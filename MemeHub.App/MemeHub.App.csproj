@@ -15,11 +15,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MemeHub.Common\MemeHub.Common.csproj" />
-    <ProjectReference Include="..\MemeHub.Database\MemeHub.Database.csproj" />
     <ProjectReference Include="..\MemeHub.Infrastructure\MemeHub.Infrastructure.csproj" />
     <ProjectReference Include="..\MemeHub.Services\MemeHub.Services.csproj" />
     <ProjectReference Include="..\MemeHub.ViewModels\MemeHub.ViewModels.csproj" />

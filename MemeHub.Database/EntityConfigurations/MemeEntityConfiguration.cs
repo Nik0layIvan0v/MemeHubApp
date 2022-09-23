@@ -11,7 +11,7 @@
             memeBuilder.HasKey(meme => meme.Id);
 
             memeBuilder.Property(prop => prop.Id)
-                       .UseIdentityColumn<int>(0, 1);
+                       .UseIdentityColumn<int>(1, 1);
 
             memeBuilder.Property(meme => meme.Title)
                        .IsUnicode(true)
@@ -21,6 +21,26 @@
                        .IsRequired(true);
 
             memeBuilder.Property(meme => meme.Content)
+                       .IsRequired(true);
+
+            memeBuilder.HasOne(meme => meme.Label)
+                       .WithMany(label => label.Memes)
+                       .HasConstraintName("FK_Memes_Labels")
+                       .HasForeignKey(meme => meme.LabelId)
+                       .OnDelete(DeleteBehavior.Restrict)
+                       .IsRequired(false);
+
+            memeBuilder.HasOne(meme => meme.User)
+                       .WithMany(user => user.Memes)
+                       .HasConstraintName("FK_Memes_Users")
+                       .HasForeignKey(meme => meme.UserId)
+                       .IsRequired(true);
+
+            memeBuilder.HasOne(meme => meme.Category)
+                       .WithMany(category => category.Memes)
+                       .HasConstraintName("FK_Memes_Categories")
+                       .HasForeignKey(meme => meme.CategoryId)
+                       .OnDelete(DeleteBehavior.Restrict)
                        .IsRequired(true);
         }
     }

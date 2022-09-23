@@ -11,16 +11,10 @@
             categoryBuilder.HasKey(category => category.Id);
 
             categoryBuilder.Property(category => category.Id)
-                           .UseIdentityColumn<int>(0, 1);
+                           .UseIdentityColumn<int>(1, 1);
 
             categoryBuilder.Property(category => category.CategoryName)
-                           .IsRequired(true);
-
-            categoryBuilder.HasMany(category => category.Memes)
-                           .WithOne(meme => meme.Category)
-                           .HasConstraintName("FK_Categories_Memes")
-                           .HasForeignKey(meme => meme.CategoryId)
-                           .OnDelete(DeleteBehavior.Restrict)
+                           .IsUnicode(true)
                            .IsRequired(true);
         }
     }
