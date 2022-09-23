@@ -1,13 +1,17 @@
 ﻿namespace MemeHub.App.Controllers
 {
+    using MemeHub.Services.LabelService;
     using MemeHub.ViewModels;
     using Microsoft.AspNetCore.Mvc;
     using System.Diagnostics;
 
     public class HomeController : Controller
     {
-        public HomeController()
+        private readonly ILabelService labelService;
+
+        public HomeController(ILabelService labelService)
         {
+            this.labelService = labelService;
         }
 
         public IActionResult Index()

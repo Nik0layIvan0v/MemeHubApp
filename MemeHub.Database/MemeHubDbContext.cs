@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using System.Reflection;
+    using System.Threading.Tasks;
 
     public class MemeHubDbContext : IdentityDbContext, IMemeHubDbContext
     {
@@ -28,6 +29,11 @@
         {
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(builder);
+        }
+
+        Task<int> IMemeHubDbContext.SaveChangesAsync()
+        {
+            return this.SaveChangesAsync();
         }
     }
 }
