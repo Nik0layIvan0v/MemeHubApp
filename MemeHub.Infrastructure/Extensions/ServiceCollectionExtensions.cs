@@ -1,5 +1,6 @@
 ﻿namespace MemeHub.Infrastructure.Extensions
 {
+    using MemeHub.Database;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class ServiceCollectionExtensions
@@ -13,6 +14,7 @@
         public static IServiceCollection AddTransientServices(this IServiceCollection collection)
         {
             //Register here all transient services here
+            collection.AddTransient<IMemeHubDbContext, MemeHubDbContext>();
             return collection;
         }
 

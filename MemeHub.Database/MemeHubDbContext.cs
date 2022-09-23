@@ -5,7 +5,7 @@
     using Microsoft.EntityFrameworkCore;
     using System.Reflection;
 
-    public class MemeHubDbContext : IdentityDbContext
+    public class MemeHubDbContext : IdentityDbContext, IMemeHubDbContext
     {
         public MemeHubDbContext(DbContextOptions<MemeHubDbContext> options)
             : base(options)
