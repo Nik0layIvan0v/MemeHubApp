@@ -30,9 +30,14 @@
 
         public async Task<bool> DeleteCategoryAsync(int targetCategoryId, int newMemeCategoryId)
         {
-            if (targetCategoryId < 0 || newMemeCategoryId < 0)
+            if (targetCategoryId < 0)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, nameof(targetCategoryId)));
+            }
+
+            if (newMemeCategoryId < 0)
+            {
+                throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, nameof(newMemeCategoryId)));
             }
 
             var deletedCategory = await memeHubDbContext.Categories
@@ -80,7 +85,7 @@
             }
 
             var result = await memeHubDbContext.Categories
-                                               .Where(cat => cat.CategoryName == name)
+                                               .Where(cat => cat.CategoryName.Contains(name) == true)
                                                .Select(cat => new CategoryServiceModel(cat.Id, cat.CategoryName))
                                                .FirstOrDefaultAsync();
             if (result == null)
