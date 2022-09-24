@@ -5,6 +5,7 @@
     using MemeHub.Database;
     using Database.Models;
     using Microsoft.EntityFrameworkCore;
+    using static MemeHub.Common.ServiceLayerConstants.LabelServiceConstants;
 
     public class LabelService : ILabelService
     {
@@ -19,10 +20,10 @@
         {
             if (string.IsNullOrWhiteSpace(labelName) == true)
             {
-                throw new ArgumentNullException(nameof(labelName));
+                throw new ArgumentNullException(string.Format(EmptyNameExceptionMessage, nameof(labelName)));
             }
 
-            Label label = new Label()
+            var label = new Label()
             {
                 Name = labelName,
             };
@@ -34,7 +35,14 @@
 
         public async Task<bool> DeleteLabelAsync(int labelId)
         {
-            Label? targetLabel = await MemeHubDbContext.Labels.FirstOrDefaultAsync(label => label.Id == labelId);
+            if (labelId < 0)
+            {
+                throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
+            }
+
+            var targetLabel = await MemeHubDbContext.Labels
+                                                    .Where(label => label.Id == labelId)
+                                                    .FirstOrDefaultAsync();
             if (targetLabel != null)
             {
                 this.MemeHubDbContext.Labels.Remove(targetLabel);
@@ -45,33 +53,46 @@
             return false;
         }
 
-        public async Task<bool> EditLabelAsync(int labelId, string labelName)
+        public async Task<bool> UpdateLabelAsync(int labelId, string labelName)
         {
-            Label? targetLabel = await this.MemeHubDbContext.Labels
-                                                            .Where(Label => Label.Id == labelId)
-                                                            .FirstOrDefaultAsync();
-            if (targetLabel != null)
+            if (labelId < 0)
             {
-                targetLabel.Name = labelName;
-                int rowAffected = await this.MemeHubDbContext.SaveChangesAsync();
-                if (rowAffected > 0)
-                {
-                    return true;
-                }
+                throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
             }
 
-            return false;
+            if (string.IsNullOrWhiteSpace(labelName) == true)
+            {
+                throw new ArgumentNullException(string.Format(EmptyNameExceptionMessage, nameof(labelName)));
+            }
+
+            var targetLabel = await this.MemeHubDbContext.Labels
+                                                         .Where(Label => Label.Id == labelId)
+                                                         .FirstOrDefaultAsync();
+            if (targetLabel == null)
+            {
+                throw new InvalidDataException(string.Format(NoSuchLabelExceptionMessage, labelId));
+            }
+
+            targetLabel.Name = labelName;
+            int rowAffected = await this.MemeHubDbContext.SaveChangesAsync();
+            return rowAffected > 0;
         }
 
         public async Task<List<LabelServiceModel>> GetAllLabelsAsync()
         {
-            return await this.MemeHubDbContext.Labels.Select(label =>
-            new LabelServiceModel(label.Id, label.Name)).ToListAsync();
+            return await this.MemeHubDbContext.Labels
+                                              .Select(label => new LabelServiceModel(label.Id, label.Name))
+                                              .ToListAsync();
         }
 
-        public async Task<LabelServiceModel> GetLabelAsync(int labelId)
+        public async Task<LabelServiceModel> GetLabelByIdAsync(int labelId)
         {
-            Label? foundedLabel = await this.MemeHubDbContext.Labels.FindAsync(labelId);
+            if (labelId < 0)
+            {
+                throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
+            }
+
+            var foundedLabel = await this.MemeHubDbContext.Labels.Where(label => label.Id == labelId).FirstOrDefaultAsync();
             if (foundedLabel != null)
             {
                 return new LabelServiceModel(foundedLabel.Id, foundedLabel.Name);

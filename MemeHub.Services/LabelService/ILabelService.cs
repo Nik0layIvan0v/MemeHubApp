@@ -6,9 +6,9 @@
 
         Task<bool> DeleteLabelAsync(int labelId);
 
-        Task<bool> EditLabelAsync(int labelId, string labelName);
+        Task<bool> UpdateLabelAsync(int labelId, string labelName);
 
-        Task<LabelServiceModel> GetLabelAsync(int labelId);
+        Task<LabelServiceModel> GetLabelByIdAsync(int labelId);
 
         Task<List<LabelServiceModel>> GetAllLabelsAsync();
     }
