@@ -8,7 +8,7 @@
 
     public class LabelService : ILabelService
     {
-        private IMemeHubDbContext MemeHubDbContext;
+        private readonly IMemeHubDbContext MemeHubDbContext;
 
         public LabelService(IMemeHubDbContext dbContext)
         {
