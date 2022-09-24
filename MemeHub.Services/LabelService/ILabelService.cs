@@ -2,14 +2,14 @@
 {
     public interface ILabelService
     {
-        Task<bool> CreateLabelAsync(string labelName);
+        Task<LabelServiceModel> CreateLabelAsync(string labelName);
 
         Task<bool> DeleteLabelAsync(int labelId);
 
         Task<bool> EditLabelAsync(int labelId, string labelName);
 
-        Task<LabelServiceModel> GetLabel(int labelId);
+        Task<LabelServiceModel> GetLabelAsync(int labelId);
 
-        Task<List<LabelServiceModel>> GetAllLabels();
+        Task<List<LabelServiceModel>> GetAllLabelsAsync();
     }
 }
