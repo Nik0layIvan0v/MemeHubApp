@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MemeHub.Database.Migrations
 {
     [DbContext(typeof(MemeHubDbContext))]
-    [Migration("20220923160647_InitialCreate")]
+    [Migration("20220925075721_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -193,7 +193,7 @@ namespace MemeHub.Database.Migrations
                     Content = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LabelId = table.Column<int>(type: "int", nullable: true)
+                    LabelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

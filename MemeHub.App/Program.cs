@@ -1,6 +1,7 @@
 namespace MemeHub.App
 {
     using MemeHub.Database;
+    using MemeHub.Database.Models;
     using MemeHub.Infrastructure.Extensions;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace MemeHub.App
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<MemeHubDbContext>(options => options.UseSqlServer(connectionString));
-            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            builder.Services.AddDefaultIdentity<User>(options =>
             {
                 //Just to make eazy the development
                 options.SignIn.RequireConfirmedAccount = false;
@@ -23,7 +24,8 @@ namespace MemeHub.App
                 options.Password.RequireUppercase = false;
                 options.Password.RequireDigit = false;
 
-            }).AddEntityFrameworkStores<MemeHubDbContext>();
+            })
+             .AddEntityFrameworkStores<MemeHubDbContext>();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddControllersWithViews();
@@ -43,23 +45,22 @@ namespace MemeHub.App
                    .UseHsts();
             }
 
-            app.UseHttpsRedirection()
+            app.ApplyMigrations()
+               .UseHttpsRedirection()
                .UseStaticFiles()
-               .UseRouting()
-               .ApplyMigrations();
+               .UseRouting();
 
+            app.UseAuthentication()
+               .UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapRazorPages();
-                endpoints.MapAreaControllerRoute(
-                    name: "Administration", 
-                    areaName:"Admin", 
+                endpoints.MapControllerRoute(
+                    name: "Areas",
                     pattern: "{area:exists}/{controller=home}/{action=index}/{id?}");
-            })
-            .UseAuthentication()
-            .UseAuthorization();
+                endpoints.MapRazorPages();
+            });
 
             app.Run();
         }
