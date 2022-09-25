@@ -4,6 +4,7 @@ namespace MemeHub.App
     using MemeHub.Database.Models;
     using MemeHub.Infrastructure.Extensions;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
     public class Program
@@ -29,7 +30,8 @@ namespace MemeHub.App
              .AddEntityFrameworkStores<MemeHubDbContext>();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter()
-                            .AddControllersWithViews();
+                            .AddControllersWithViews(options => 
+                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
             builder.Services.AddScopedServices();
             builder.Services.AddTransientServices();
@@ -55,7 +57,7 @@ namespace MemeHub.App
             app.UseAuthentication()
                .UseAuthorization()
                .AddDefaultAdministrator();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
