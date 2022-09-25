@@ -25,16 +25,18 @@ namespace MemeHub.App
                 options.Password.RequireDigit = false;
 
             })
+             .AddRoles<IdentityRole>()
              .AddEntityFrameworkStores<MemeHubDbContext>();
 
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter()
+                            .AddControllersWithViews();
+
             builder.Services.AddScopedServices();
             builder.Services.AddTransientServices();
             builder.Services.AddSingletonServices();
 
             WebApplication app = builder.Build();
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() == true)
             {
                 app.UseDeveloperExceptionPage()
                    .UseMigrationsEndPoint();
@@ -51,7 +53,8 @@ namespace MemeHub.App
                .UseRouting();
 
             app.UseAuthentication()
-               .UseAuthorization();
+               .UseAuthorization()
+               .AddDefaultAdministrator();
             
             app.UseEndpoints(endpoints =>
             {

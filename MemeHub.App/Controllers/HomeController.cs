@@ -24,7 +24,7 @@
             return View();
         }
 
-        public async Task<IActionResult> Privacy()
+        public async Task<IActionResult> About()
         {
             return View();
         }

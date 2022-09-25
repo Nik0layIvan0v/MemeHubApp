@@ -15,8 +15,4 @@
     <ProjectReference Include="..\MemeHub.Database\MemeHub.Database.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UserService\" />
-  </ItemGroup>
-
 </Project>

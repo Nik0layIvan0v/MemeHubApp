@@ -19,9 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MemeHub.Common\MemeHub.Common.csproj" />
     <ProjectReference Include="..\MemeHub.Infrastructure\MemeHub.Infrastructure.csproj" />
-    <ProjectReference Include="..\MemeHub.Services\MemeHub.Services.csproj" />
+    <ProjectReference Include="..\MemeHub.Seeder\MemeHub.Seeder.csproj" />
     <ProjectReference Include="..\MemeHub.ViewModels\MemeHub.ViewModels.csproj" />
   </ItemGroup>
 
