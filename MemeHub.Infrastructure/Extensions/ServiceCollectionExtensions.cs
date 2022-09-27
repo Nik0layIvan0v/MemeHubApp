@@ -3,6 +3,7 @@
     using MemeHub.Database;
     using MemeHub.Services.CategoryService;
     using MemeHub.Services.LabelService;
+    using MemeHub.Services.MemeService;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class ServiceCollectionExtensions
@@ -16,7 +17,8 @@
         public static IServiceCollection AddTransientServices(this IServiceCollection collection)
         {
             //Register here all transient services here
-            collection.AddTransient<ILabelService,LabelService>();
+            collection.AddTransient<IMemeService, MemeService>();
+            collection.AddTransient<ILabelService, LabelService>();
             collection.AddTransient<IMemeHubDbContext, MemeHubDbContext>();
             collection.AddTransient<ICategoryService, CategoryService>();
             return collection;
