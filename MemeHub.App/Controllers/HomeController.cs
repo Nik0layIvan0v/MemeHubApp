@@ -1,8 +1,10 @@
 ﻿namespace MemeHub.App.Controllers
 {
+    using MemeHub.Database.Models;
     using MemeHub.Services.CategoryService;
     using MemeHub.Services.LabelService;
     using MemeHub.ViewModels;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using System.Diagnostics;
 
@@ -10,18 +12,24 @@
     {
         private readonly ILabelService labelService;
         private readonly ICategoryService categoryService;
+        private readonly SignInManager<User> signInManager;
 
-        public HomeController(ILabelService labelService, 
-            ICategoryService categoryService 
-            )
+        public HomeController
+        (
+            ILabelService labelService,
+            ICategoryService categoryService,
+            SignInManager<User> signInManager)
         {
             this.labelService = labelService;
             this.categoryService = categoryService;
+            this.signInManager = signInManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var test = this.signInManager?.Context?.User?.Identity?.Name;
             return View();
+            
         }
 
         public async Task<IActionResult> About()

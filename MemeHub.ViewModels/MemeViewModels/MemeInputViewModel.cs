@@ -4,7 +4,7 @@
     {
         public string Title { get; set; }
 
-        public byte[] Content { get; set; }
+        public string imageUrl { get; set; }
 
         public int LabelId { get; set; }
 

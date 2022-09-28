@@ -22,7 +22,7 @@
                 Title = memeInputView.Title,
                 UserId = memeInputView.UserId,
                 CategoryId = memeInputView.CategoryId,
-                Content = memeInputView.Content,
+                imageUrl = memeInputView.imageUrl,
                 CreatedAt = DateTime.UtcNow,
                 LabelId = memeInputView.LabelId
             };

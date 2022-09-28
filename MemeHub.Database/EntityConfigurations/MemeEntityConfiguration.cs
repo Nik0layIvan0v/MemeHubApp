@@ -20,7 +20,7 @@
             memeBuilder.Property(meme => meme.CreatedAt)
                        .IsRequired(true);
 
-            memeBuilder.Property(meme => meme.Content)
+            memeBuilder.Property(meme => meme.imageUrl)
                        .IsRequired(true);
 
             memeBuilder.HasOne(meme => meme.Label)

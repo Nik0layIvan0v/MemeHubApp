@@ -17,7 +17,8 @@
         [MaxLength(MaxTitleLength)]
         public string Title { get; set; }
 
-        public byte[] Content { get; set; }
+        [Required]
+        public string imageUrl { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -28,7 +29,7 @@
         public User User { get; set; }
 
 
-        public int LabelId { get; set; }
+        public int? LabelId { get; set; }
 
         public Label Label { get; set; }
 
