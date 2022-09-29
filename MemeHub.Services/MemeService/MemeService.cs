@@ -2,29 +2,54 @@
 {
     using MemeHub.Database;
     using MemeHub.Database.Models;
+    using MemeHub.Services.CategoryService;
+    using MemeHub.Services.LabelService;
     using MemeHub.ViewModels.MemeViewModels;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using static MemeHub.Common.ServiceLayerConstants.MemeServiceConstants;
 
     public class MemeService : IMemeService
     {
         private readonly IMemeHubDbContext memeHubDbContext;
+        private readonly ICategoryService categoryService;
+        private readonly ILabelService labelService;
 
-        public MemeService(IMemeHubDbContext memeHubDbContext)
+        public MemeService(IMemeHubDbContext memeHubDbContext, ICategoryService categoryService, ILabelService labelService)
         {
             this.memeHubDbContext = memeHubDbContext;
+            this.categoryService = categoryService;
+            this.labelService = labelService;
         }
 
-        public async Task<int> CreateMemeAsync(MemeInputViewModel memeInputView)
+        public async Task<int> CreateMemeAsync(string userId, MemeFormViewModel memeInputFormView)
         {
+            if (string.IsNullOrWhiteSpace(userId) == true)
+            {
+                throw new InvalidOperationException(string.Format(EmptyUserId, userId));
+            }
+
+            if (string.IsNullOrWhiteSpace(memeInputFormView.imageUrl) == true)
+            {
+                //TODO: Verify if file is actual image!!!
+                throw new InvalidOperationException(string.Format(EmptyImageUrl, memeInputFormView.imageUrl));
+            }
+
+            var category = await this.categoryService.GetCategoryByIdAsync(memeInputFormView.CategoryId);
+            if (category == null)
+            {
+                throw new InvalidOperationException(string.Format(CategoryNotFound, memeInputFormView.CategoryId));
+            }
+
+            var label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId);
             var meme = new Meme()
             {
-                Title = memeInputView.Title,
-                UserId = memeInputView.UserId,
-                CategoryId = memeInputView.CategoryId,
-                imageUrl = memeInputView.imageUrl,
+                Title = memeInputFormView.Title,
+                UserId = userId,
+                Category = category,
+                imageUrl = memeInputFormView.imageUrl,
                 CreatedAt = DateTime.UtcNow,
-                LabelId = memeInputView.LabelId
+                Label = label
             };
 
             await this.memeHubDbContext.Memes.AddAsync(meme);
@@ -47,7 +72,7 @@
             throw new NotImplementedException();
         }
 
-        public Task<MemeServiceModel> UpdateMemeAsync(int targetMemeId, MemeInputViewModel memeInputView)
+        public Task<MemeServiceModel> UpdateMemeAsync(int targetMemeId, MemeFormViewModel memeInputView)
         {
             throw new NotImplementedException();
         }

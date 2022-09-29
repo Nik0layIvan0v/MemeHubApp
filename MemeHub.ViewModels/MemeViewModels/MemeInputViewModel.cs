@@ -1,6 +1,6 @@
 ﻿namespace MemeHub.ViewModels.MemeViewModels
 {
-    public class MemeInputViewModel
+    public class MemeFormViewModel
     {
         public string Title { get; set; }
 
@@ -9,7 +9,5 @@
         public int LabelId { get; set; }
 
         public int CategoryId { get; set; }
-
-        public string UserId { get; set; }
     }
 }

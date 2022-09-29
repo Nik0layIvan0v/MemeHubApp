@@ -1,5 +1,7 @@
 ﻿namespace MemeHub.Services.LabelService
 {
+    using MemeHub.Database.Models;
+
     public interface ILabelService
     {
         Task<LabelServiceModel> CreateLabelAsync(string labelName);
@@ -8,7 +10,7 @@
 
         Task<bool> UpdateLabelAsync(int labelId, string labelName);
 
-        Task<LabelServiceModel> GetLabelByIdAsync(int labelId);
+        Task<Label?> GetLabelByIdAsync(int labelId);
 
         Task<List<LabelServiceModel>> GetAllLabelsAsync();
     }

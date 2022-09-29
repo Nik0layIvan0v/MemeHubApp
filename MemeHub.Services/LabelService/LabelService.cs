@@ -35,7 +35,7 @@
 
         public async Task<bool> DeleteLabelAsync(int labelId)
         {
-            if (labelId < 0)
+            if (labelId <= 0)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
             }
@@ -55,7 +55,7 @@
 
         public async Task<bool> UpdateLabelAsync(int labelId, string labelName)
         {
-            if (labelId < 0)
+            if (labelId <= 0)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
             }
@@ -85,20 +85,14 @@
                                               .ToListAsync();
         }
 
-        public async Task<LabelServiceModel> GetLabelByIdAsync(int labelId)
+        public async Task<Label?> GetLabelByIdAsync(int labelId)
         {
-            if (labelId < 0)
+            if (labelId <= 0)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
             }
 
-            var foundedLabel = await this.MemeHubDbContext.Labels.Where(label => label.Id == labelId).FirstOrDefaultAsync();
-            if (foundedLabel != null)
-            {
-                return new LabelServiceModel(foundedLabel.Id, foundedLabel.Name);
-            }
-
-            return null;
+            return await this.MemeHubDbContext.Labels.Where(label => label.Id == labelId).FirstOrDefaultAsync();
         }
     }
 }

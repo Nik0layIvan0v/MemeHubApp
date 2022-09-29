@@ -128,5 +128,17 @@
             int countOfChanges = await memeHubDbContext.SaveChangesAsync();
             return countOfChanges > 0;
         }
+
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            if (id < 0)
+            {
+                throw new ArgumentNullException(string.Format(IdLessThanZeroExceptionMessage, id));
+            }
+
+            return await memeHubDbContext.Categories
+                                         .Where(cat => cat.Id == id)
+                                         .FirstOrDefaultAsync();
+        }
     }
 }

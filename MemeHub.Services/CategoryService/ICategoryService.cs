@@ -1,5 +1,7 @@
 ﻿namespace MemeHub.Services.CategoryService
 {
+    using MemeHub.Database.Models;
+
     public interface ICategoryService
     {
         Task<CategoryServiceModel> CreateCategoryAsync(string name);
@@ -13,5 +15,7 @@
         Task<CategoryServiceModel> GetCategoryByNameAsync(string name);
 
         Task<int> GetCategoryIdAsync(string name);
+
+        Task<Category?> GetCategoryByIdAsync(int id);
     }
 }
