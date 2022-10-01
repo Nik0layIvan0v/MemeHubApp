@@ -14,5 +14,5 @@ Is created just for practice. Basic idea is to represent Fasebook like applicati
 
 ## Database
 ### Database diagram:
-![Database diagram](/MemeHubApp/MemeHub.Database/DatabaseDiagram.png)
+![Database diagram](https://github.com/Nik0layIvan0v/MemeHubApp/blob/main/MemeHub.Database/DatabaseDiagram.png?raw=true)
 
