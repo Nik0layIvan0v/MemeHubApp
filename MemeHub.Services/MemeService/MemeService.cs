@@ -5,6 +5,7 @@
     using MemeHub.Services.CategoryService;
     using MemeHub.Services.LabelService;
     using MemeHub.ViewModels.MemeViewModels;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using static MemeHub.Common.ServiceLayerConstants.MemeServiceConstants;
@@ -29,10 +30,10 @@
                 throw new InvalidOperationException(string.Format(EmptyUserId, userId));
             }
 
-            if (string.IsNullOrWhiteSpace(memeInputFormView.imageUrl) == true)
+            if (string.IsNullOrWhiteSpace(memeInputFormView.ImageUrl) == true)
             {
                 //TODO: Verify if file is actual image!!!
-                throw new InvalidOperationException(string.Format(EmptyImageUrl, memeInputFormView.imageUrl));
+                throw new InvalidOperationException(string.Format(EmptyImageUrl, memeInputFormView.ImageUrl));
             }
 
             var category = await this.categoryService.GetCategoryByIdAsync(memeInputFormView.CategoryId);
@@ -47,7 +48,7 @@
                 Title = memeInputFormView.Title,
                 UserId = userId,
                 Category = category,
-                imageUrl = memeInputFormView.imageUrl,
+                imageUrl = memeInputFormView.ImageUrl,
                 CreatedAt = DateTime.UtcNow,
                 Label = label
             };
@@ -57,24 +58,108 @@
             return meme.Id;
         }
 
-        public Task<bool> DeleteMemeAsync(int targetMemeId)
+        //TODO: Add check if user own the meme or is administrator!
+        public async Task<bool> DeleteMemeAsync(int targetMemeId)
         {
-            throw new NotImplementedException();
+            if (targetMemeId <= 0)
+            {
+                throw new InvalidDataException($"{nameof(targetMemeId)} cannot be less than zero!");
+            }
+
+            var meme = await this.memeHubDbContext.Memes
+                                                  .Where(meme => meme.Id == targetMemeId)
+                                                  .FirstOrDefaultAsync();
+            if (meme == null)
+            {
+                throw new InvalidDataException($"Meme with id: {targetMemeId} not found in the database!");
+            }
+
+            int countOfChanges = await this.memeHubDbContext.SaveChangesAsync();
+            return countOfChanges > 0;
         }
 
-        public Task<MemeServiceModel> GetMemeByIdAsync(int targetMemeId)
+        public async Task<MemeServiceModel> GetMemeByIdAsync(int targetMemeId)
         {
-            throw new NotImplementedException();
+            if (targetMemeId <= 0)
+            {
+                throw new InvalidDataException($"{nameof(targetMemeId)} cannot be less than zero!");
+            }
+
+            var meme = await this.memeHubDbContext.Memes
+                                 .Where(meme => meme.Id == targetMemeId)
+                                 .FirstOrDefaultAsync();
+            if (meme == null)
+            {
+                throw new InvalidDataException($"Meme with id: {targetMemeId} not found in the database!");
+            }
+
+            var memeServiceModel = new MemeServiceModel()
+            {
+                //TODO: Implement!
+            };
+
+            return memeServiceModel;
         }
 
-        public Task<List<MemeServiceModel>> GetMemesAsync(int limit, int offset)
+        public async Task<List<MemeServiceModel>> GetMemesAsync(int limit, int offset)
         {
-            throw new NotImplementedException();
+            if (limit <= 0)
+            {
+                throw new InvalidDataException($"{nameof(limit)} cannot be less than zero!");
+            }
+
+            if (offset <= 0)
+            {
+                throw new InvalidDataException($"{nameof(offset)} cannot be less than zero!");
+            }
+
+            var memes = await this.memeHubDbContext.Memes
+                                                   .Skip(offset)
+                                                   .Take(limit)
+                                                   .Select(meme => new MemeServiceModel()
+                                                   {
+
+                                                   })
+                                                   .ToListAsync();
+            return memes;
         }
 
-        public Task<MemeServiceModel> UpdateMemeAsync(int targetMemeId, MemeFormViewModel memeInputView)
+        //TODO: Add check if user own the meme or is administrator!
+        public async Task<int?> UpdateMemeAsync(int targetMemeId, MemeFormViewModel memeInputFormView)
         {
-            throw new NotImplementedException();
+            if (targetMemeId <= 0)
+            {
+                throw new InvalidDataException($"{nameof(targetMemeId)} cannot be less than zero!");
+            }
+
+            if (memeInputFormView == null)
+            {
+                throw new ArgumentNullException($"{nameof(memeInputFormView)} cannot be null!");
+            }
+
+            var meme = await this.memeHubDbContext.Memes
+                                                  .Where(meme => meme.Id == targetMemeId)
+                                                  .FirstOrDefaultAsync();
+
+            if (meme == null)
+            {
+                throw new InvalidDataException($"Meme with id: {targetMemeId} not found in the database!");
+            }
+
+            var category = await this.categoryService.GetCategoryByIdAsync(memeInputFormView.CategoryId);
+            if (category == null)
+            {
+                throw new InvalidOperationException(string.Format(CategoryNotFound, memeInputFormView.CategoryId));
+            }
+
+            var label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId);
+            meme.Title = memeInputFormView.Title;
+            meme.Category = category;
+            meme.imageUrl = memeInputFormView.ImageUrl;
+            meme.CreatedAt = DateTime.UtcNow;
+            meme.Label = label;
+            await this.memeHubDbContext.SaveChangesAsync();
+            return meme.Id;
         }
     }
 }

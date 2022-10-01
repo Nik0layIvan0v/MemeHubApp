@@ -41,7 +41,7 @@
             var testFormViewModel = new MemeFormViewModel()
             {
                 CategoryId = 1,
-                imageUrl = "https://englishonline.britishcouncil.org/wp-content/uploads/2021/11/image2-drake-posting-meme.jpg",
+                ImageUrl = "https://englishonline.britishcouncil.org/wp-content/uploads/2021/11/image2-drake-posting-meme.jpg",
                 LabelId = 1,
                 Title = "Cool meme title"
             };

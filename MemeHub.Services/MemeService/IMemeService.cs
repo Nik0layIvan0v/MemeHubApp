@@ -6,7 +6,7 @@
     {
         Task<int?> CreateMemeAsync (string userId, MemeFormViewModel memeInputView);
 
-        Task<MemeServiceModel> UpdateMemeAsync(int targetMemeId, MemeFormViewModel memeInputView);
+        Task<int?> UpdateMemeAsync(int targetMemeId, MemeFormViewModel memeInputView);
 
         Task<bool> DeleteMemeAsync(int memeId);
 
