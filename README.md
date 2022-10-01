@@ -13,4 +13,6 @@ Is created just for practice. Basic idea is to represent Fasebook like applicati
 1. MemeHub.ViewModels - All data models that app is going to use for it's presentations
 
 ## Database
-![Database diagram](Isolated.png "Title")
+### Database diagram:
+![Database diagram](/MemeHubApp/MemeHub.Database/DatabaseDiagram.png)
+

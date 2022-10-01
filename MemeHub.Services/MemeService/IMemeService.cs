@@ -4,7 +4,7 @@
 
     public interface IMemeService
     {
-        Task<int> CreateMemeAsync (string userId, MemeFormViewModel memeInputView);
+        Task<int?> CreateMemeAsync (string userId, MemeFormViewModel memeInputView);
 
         Task<MemeServiceModel> UpdateMemeAsync(int targetMemeId, MemeFormViewModel memeInputView);
 

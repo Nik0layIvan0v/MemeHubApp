@@ -11,18 +11,18 @@
 
     public class MemeService : IMemeService
     {
-        private readonly IMemeHubDbContext memeHubDbContext;
+        private readonly MemeHubDbContext memeHubDbContext;
         private readonly ICategoryService categoryService;
         private readonly ILabelService labelService;
 
-        public MemeService(IMemeHubDbContext memeHubDbContext, ICategoryService categoryService, ILabelService labelService)
+        public MemeService(MemeHubDbContext memeHubDbContext, ICategoryService categoryService, ILabelService labelService)
         {
             this.memeHubDbContext = memeHubDbContext;
             this.categoryService = categoryService;
             this.labelService = labelService;
         }
 
-        public async Task<int> CreateMemeAsync(string userId, MemeFormViewModel memeInputFormView)
+        public async Task<int?> CreateMemeAsync(string userId, MemeFormViewModel memeInputFormView)
         {
             if (string.IsNullOrWhiteSpace(userId) == true)
             {

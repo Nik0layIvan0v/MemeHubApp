@@ -1,12 +1,12 @@
 ﻿namespace MemeHub.Database
 {
+    using MemeHub.Database.Extensions;
     using MemeHub.Database.Models;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using System.Reflection;
-    using System.Threading.Tasks;
 
-    public class MemeHubDbContext : IdentityDbContext, IMemeHubDbContext
+    public class MemeHubDbContext : IdentityDbContext
     {
         public MemeHubDbContext(DbContextOptions<MemeHubDbContext> options)
             : base(options)
@@ -25,15 +25,18 @@
 
         public DbSet<ParentChildrenComment> ParentChildrenComments { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            base.OnModelCreating(builder);
-        }
+            if (modelBuilder == null)
+            {
+                throw new ArgumentNullException();
+            }
 
-        Task<int> IMemeHubDbContext.SaveChangesAsync()
-        {
-            return this.SaveChangesAsync();
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.AddRemovePluralizeConvention();
+            modelBuilder.AddRemoveOneToManyCascadeConvention();
+            modelBuilder.ApplyConventions();
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

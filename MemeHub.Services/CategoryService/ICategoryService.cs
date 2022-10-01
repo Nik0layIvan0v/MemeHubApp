@@ -14,7 +14,7 @@
 
         Task<CategoryServiceModel> GetCategoryByNameAsync(string name);
 
-        Task<int> GetCategoryIdAsync(string name);
+        Task<int?> GetCategoryIdAsync(string name);
 
         Task<Category?> GetCategoryByIdAsync(int id);
     }

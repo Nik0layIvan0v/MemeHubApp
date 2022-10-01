@@ -1,37 +1,47 @@
 ﻿namespace MemeHub.Database.Models
 {
+    using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using static MemeHub.Common.DatabaseConstants.MemesConstant;
-    public class Meme
+    public class Meme : BaseIdentityColumn
     {
         public Meme()
         {
+            this.Category = new Category();
+            this.User = new User();
+            this.Label = new Label();
             this.Likes = new HashSet<Like>();
             this.Comments = new HashSet<Comment>();
         }
 
-        public int Id { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        [MaxLength(MaxTitleLength)]
-        public string Title { get; set; }
+        [Required]
+        [Column(TypeName = "DATETIME2")]
+        public DateTime? CreatedAt { get; set; }
 
         [Required]
-        public string imageUrl { get; set; }
+        [Unicode(true)]
+        [MaxLength(MaxTitleLength)]
+        public string? Title { get; set; }
 
-        public int CategoryId { get; set; }
+        //There may be decoded urls with non unicode symbols
+        [Required]
+        [Unicode(true)]
+        public string? imageUrl { get; set; }
 
-        public Category Category { get; set; }
-        
-        public string UserId { get; set; }
+        [Required]
+        public int? CategoryId { get; set; }
 
-        public User User { get; set; }
+        public virtual Category Category { get; set; }
 
+        [Required]
+        public string? UserId { get; set; }
+
+        public virtual User User { get; set; }
 
         public int? LabelId { get; set; }
 
-        public Label Label { get; set; }
+        public virtual Label Label { get; set; }
 
         public virtual ICollection<Like> Likes { get; init; }
 

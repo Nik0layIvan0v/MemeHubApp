@@ -29,7 +29,6 @@
             };
 
             await roleManager.CreateAsync(role);
-
             var email = adminConfiguration.GetRequiredSection("Administrator:Email").Value;
             var username = adminConfiguration.GetRequiredSection("Administrator:Username").Value;
             var administrator = new User()

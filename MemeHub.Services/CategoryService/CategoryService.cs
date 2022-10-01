@@ -96,7 +96,7 @@
             return result;
         }
 
-        public async Task<int> GetCategoryIdAsync(string name)
+        public async Task<int?> GetCategoryIdAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name) == true)
             {

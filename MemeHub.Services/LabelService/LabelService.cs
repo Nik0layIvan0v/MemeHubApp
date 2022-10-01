@@ -9,9 +9,9 @@
 
     public class LabelService : ILabelService
     {
-        private readonly IMemeHubDbContext MemeHubDbContext;
+        private readonly MemeHubDbContext MemeHubDbContext;
 
-        public LabelService(IMemeHubDbContext dbContext)
+        public LabelService(MemeHubDbContext dbContext)
         {
             this.MemeHubDbContext = dbContext;
         }

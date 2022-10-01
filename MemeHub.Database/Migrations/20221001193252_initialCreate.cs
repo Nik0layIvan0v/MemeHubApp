@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MemeHub.Database.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,8 +28,6 @@ namespace MemeHub.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NickName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -51,7 +49,7 @@ namespace MemeHub.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "Category",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -60,11 +58,11 @@ namespace MemeHub.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_Category", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Labels",
+                name: "Label",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -73,7 +71,7 @@ namespace MemeHub.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Labels", x => x.Id);
+                    table.PrimaryKey("PK_Label", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,124 +181,138 @@ namespace MemeHub.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Memes",
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NickName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_User_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Meme",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    imageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LabelId = table.Column<int>(type: "int", nullable: false)
+                    LabelId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Memes", x => x.Id);
+                    table.PrimaryKey("PK_Meme", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Memes_Categories",
+                        name: "FK_Meme_Category_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Categories",
+                        principalTable: "Category",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Memes_Labels",
+                        name: "FK_Meme_Label_LabelId",
                         column: x => x.LabelId,
-                        principalTable: "Labels",
+                        principalTable: "Label",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Meme_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Memes_Users",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
+                name: "Comment",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     MemeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.PrimaryKey("PK_Comment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_Memes",
+                        name: "FK_Comment_Meme_MemeId",
                         column: x => x.MemeId,
-                        principalTable: "Memes",
+                        principalTable: "Meme",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Comments_Users",
+                        name: "FK_Comment_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "Like",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LikedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MemeId = table.Column<int>(type: "int", nullable: false),
-                    CommentId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    LikedAt = table.Column<DateTime>(type: "DATETIME2", nullable: false),
+                    MemeId = table.Column<int>(type: "int", nullable: true),
+                    CommentId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
+                    table.PrimaryKey("PK_Like", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_Comments",
+                        name: "FK_Like_Comment_CommentId",
                         column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalTable: "Comment",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Likes_Memes",
+                        name: "FK_Like_Meme_MemeId",
                         column: x => x.MemeId,
-                        principalTable: "Memes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalTable: "Meme",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Likes_Users",
+                        name: "FK_Like_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ParentChildrenComments",
+                name: "ParentChildrenComment",
                 columns: table => new
                 {
-                    ChildCommentId = table.Column<int>(type: "int", nullable: false),
-                    ParentCommentId = table.Column<int>(type: "int", nullable: false)
+                    ParentCommentId = table.Column<int>(type: "int", nullable: false),
+                    ChildCommentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ParentChildrenComments", x => new { x.ParentCommentId, x.ChildCommentId });
+                    table.PrimaryKey("PK_ParentChildrenComment", x => new { x.ParentCommentId, x.ChildCommentId });
                     table.ForeignKey(
-                        name: "FK_Chidren_Comments",
+                        name: "FK_ParentChildrenComment_Comment_ChildCommentId",
                         column: x => x.ChildCommentId,
-                        principalTable: "Comments",
+                        principalTable: "Comment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Parent_Comments",
+                        name: "FK_ParentChildrenComment_Comment_ParentCommentId",
                         column: x => x.ParentCommentId,
-                        principalTable: "Comments",
+                        principalTable: "Comment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -345,48 +357,48 @@ namespace MemeHub.Database.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_MemeId",
-                table: "Comments",
+                name: "IX_Comment_MemeId",
+                table: "Comment",
                 column: "MemeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_UserId",
-                table: "Comments",
+                name: "IX_Comment_UserId",
+                table: "Comment",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_CommentId",
-                table: "Likes",
+                name: "IX_Like_CommentId",
+                table: "Like",
                 column: "CommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_MemeId",
-                table: "Likes",
+                name: "IX_Like_MemeId",
+                table: "Like",
                 column: "MemeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserId",
-                table: "Likes",
+                name: "IX_Like_UserId",
+                table: "Like",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Memes_CategoryId",
-                table: "Memes",
+                name: "IX_Meme_CategoryId",
+                table: "Meme",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Memes_LabelId",
-                table: "Memes",
+                name: "IX_Meme_LabelId",
+                table: "Meme",
                 column: "LabelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Memes_UserId",
-                table: "Memes",
+                name: "IX_Meme_UserId",
+                table: "Meme",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParentChildrenComments_ChildCommentId",
-                table: "ParentChildrenComments",
+                name: "IX_ParentChildrenComment_ChildCommentId",
+                table: "ParentChildrenComment",
                 column: "ChildCommentId");
         }
 
@@ -408,25 +420,28 @@ namespace MemeHub.Database.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "Like");
 
             migrationBuilder.DropTable(
-                name: "ParentChildrenComments");
+                name: "ParentChildrenComment");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Comment");
 
             migrationBuilder.DropTable(
-                name: "Memes");
+                name: "Meme");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Category");
 
             migrationBuilder.DropTable(
-                name: "Labels");
+                name: "Label");
+
+            migrationBuilder.DropTable(
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MemeHub.Database.Migrations
 {
     [DbContext(typeof(MemeHubDbContext))]
-    [Migration("20220929204111_AddCategoriesIdentityColumn")]
-    partial class AddCategoriesIdentityColumn
+    [Migration("20221001193252_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,7 +40,7 @@ namespace MemeHub.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("MemeHub.Database.Models.Comment", b =>
@@ -54,12 +54,15 @@ namespace MemeHub.Database.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(500)
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("CreatedDate")
+                        .IsRequired()
+                        .HasColumnType("DATETIME2");
 
-                    b.Property<int>("MemeId")
+                    b.Property<int?>("MemeId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -72,7 +75,7 @@ namespace MemeHub.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("MemeHub.Database.Models.Label", b =>
@@ -91,7 +94,7 @@ namespace MemeHub.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Labels");
+                    b.ToTable("Label");
                 });
 
             modelBuilder.Entity("MemeHub.Database.Models.Like", b =>
@@ -102,13 +105,13 @@ namespace MemeHub.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CommentId")
+                    b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("LikedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("DATETIME2");
 
-                    b.Property<int>("MemeId")
+                    b.Property<int?>("MemeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
@@ -118,6 +121,7 @@ namespace MemeHub.Database.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -128,7 +132,7 @@ namespace MemeHub.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("MemeHub.Database.Models.Meme", b =>
@@ -139,11 +143,13 @@ namespace MemeHub.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("CreatedAt")
+                        .IsRequired()
+                        .HasColumnType("DATETIME2");
 
                     b.Property<int?>("LabelId")
                         .HasColumnType("int");
@@ -160,6 +166,7 @@ namespace MemeHub.Database.Migrations
 
                     b.Property<string>("imageUrl")
                         .IsRequired()
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -170,22 +177,24 @@ namespace MemeHub.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Memes");
+                    b.ToTable("Meme");
                 });
 
             modelBuilder.Entity("MemeHub.Database.Models.ParentChildrenComment", b =>
                 {
-                    b.Property<int>("ParentCommentId")
-                        .HasColumnType("int");
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
-                    b.Property<int>("ChildCommentId")
-                        .HasColumnType("int");
+                    b.Property<int?>("ChildCommentId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(2);
 
                     b.HasKey("ParentCommentId", "ChildCommentId");
 
                     b.HasIndex("ChildCommentId");
 
-                    b.ToTable("ParentChildrenComments");
+                    b.ToTable("ParentChildrenComment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -252,10 +261,6 @@ namespace MemeHub.Database.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -307,8 +312,6 @@ namespace MemeHub.Database.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -397,11 +400,11 @@ namespace MemeHub.Database.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.Property<string>("NickName")
-                        .IsRequired()
                         .HasMaxLength(30)
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(30)");
 
-                    b.HasDiscriminator().HasValue("User");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("MemeHub.Database.Models.Comment", b =>
@@ -410,15 +413,13 @@ namespace MemeHub.Database.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("MemeId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Comments_Memes");
+                        .IsRequired();
 
                     b.HasOne("MemeHub.Database.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Comments_Users");
+                        .IsRequired();
 
                     b.Navigation("Meme");
 
@@ -429,21 +430,17 @@ namespace MemeHub.Database.Migrations
                 {
                     b.HasOne("MemeHub.Database.Models.Comment", "Comment")
                         .WithMany("Likes")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_Likes_Comments");
+                        .HasForeignKey("CommentId");
 
                     b.HasOne("MemeHub.Database.Models.Meme", "Meme")
                         .WithMany("Likes")
-                        .HasForeignKey("MemeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_Likes_Memes");
+                        .HasForeignKey("MemeId");
 
                     b.HasOne("MemeHub.Database.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_Likes_Users");
+                        .IsRequired();
 
                     b.Navigation("Comment");
 
@@ -458,21 +455,17 @@ namespace MemeHub.Database.Migrations
                         .WithMany("Memes")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Memes_Categories");
+                        .IsRequired();
 
                     b.HasOne("MemeHub.Database.Models.Label", "Label")
                         .WithMany("Memes")
-                        .HasForeignKey("LabelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_Memes_Labels");
+                        .HasForeignKey("LabelId");
 
                     b.HasOne("MemeHub.Database.Models.User", "User")
                         .WithMany("Memes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Memes_Users");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
@@ -487,15 +480,13 @@ namespace MemeHub.Database.Migrations
                         .WithMany("ChildrenComments")
                         .HasForeignKey("ChildCommentId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Chidren_Comments");
+                        .IsRequired();
 
                     b.HasOne("MemeHub.Database.Models.Comment", "ParentComment")
                         .WithMany("ParentComments")
                         .HasForeignKey("ParentCommentId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Parent_Comments");
+                        .IsRequired();
 
                     b.Navigation("ChildComment");
 
@@ -550,6 +541,15 @@ namespace MemeHub.Database.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MemeHub.Database.Models.User", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithOne()
+                        .HasForeignKey("MemeHub.Database.Models.User", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 

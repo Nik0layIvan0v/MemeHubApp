@@ -1,6 +1,7 @@
 ﻿namespace MemeHub.Database.Models
 {
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
     using static MemeHub.Common.DatabaseConstants.UsersConstant;
 
@@ -13,8 +14,9 @@
             this.Likes = new HashSet<Like>();
         }
 
+        [Unicode(true)]
         [MaxLength(MaxNickNameLength)]
-        public string NickName { get; set; }
+        public string? NickName { get; set; }
 
         public virtual ICollection<Meme> Memes { get; init; }
 

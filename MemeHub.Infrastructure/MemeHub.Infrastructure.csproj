@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MemeHub.Database\MemeHub.Database.csproj" />
     <ProjectReference Include="..\MemeHub.Seeder\MemeHub.Seeder.csproj" />
     <ProjectReference Include="..\MemeHub.Services\MemeHub.Services.csproj" />
   </ItemGroup>

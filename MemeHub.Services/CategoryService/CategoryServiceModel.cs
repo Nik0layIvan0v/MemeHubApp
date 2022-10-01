@@ -6,14 +6,14 @@
         {
         }
 
-        public CategoryServiceModel(int id, string name)
+        public CategoryServiceModel(int? id, string name)
             : this()
         {
             this.Id = id;
             this.Name = name;
         }
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string Name { get; set; }
     }

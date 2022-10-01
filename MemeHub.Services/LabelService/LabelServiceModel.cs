@@ -4,7 +4,7 @@
 
     public class LabelServiceModel
     {
-        public LabelServiceModel(int id, string name)
+        public LabelServiceModel(int? id, string name)
         {
             this.Id = id;
             this.Name = name;

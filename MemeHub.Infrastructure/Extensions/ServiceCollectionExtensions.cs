@@ -1,6 +1,5 @@
 ﻿namespace MemeHub.Infrastructure.Extensions
 {
-    using MemeHub.Database;
     using MemeHub.Services.CategoryService;
     using MemeHub.Services.LabelService;
     using MemeHub.Services.MemeService;
@@ -19,7 +18,6 @@
             //Register here all transient services here
             collection.AddTransient<IMemeService, MemeService>();
             collection.AddTransient<ILabelService, LabelService>();
-            collection.AddTransient<IMemeHubDbContext, MemeHubDbContext>();
             collection.AddTransient<ICategoryService, CategoryService>();
             return collection;
         }
