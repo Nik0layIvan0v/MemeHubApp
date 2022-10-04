@@ -8,16 +8,16 @@
 
         Task<bool> DeleteLikeTypeAsync(int targetLikeId);
 
-        Task<bool> AddLikeToMemeAsync(int memeId);
+        Task<bool> AddLikeToMemeAsync(int memeId, int likeId);
 
-        Task<bool> AddLikeToCommentAsync(int commentId);
+        Task<bool> AddLikeToCommentAsync(int commentId, int likeId);
 
-        Task<bool> AddLikeToUserAsync(string userId);
+        Task<bool> AddLikeToUserAsync(string userId, int likeId);
 
-        Task<bool> RemoveLikeFromMemeAsync(int memeId);
+        Task<bool> RemoveLikeFromMemeAsync(int memeId, int likeId);
 
-        Task<bool> RemoveLikeFromCommentAsync(int commentId);
+        Task<bool> RemoveLikeFromCommentAsync(int commentId, int likeId);
 
-        Task<bool> RemoveLikeFromUserAsync(int userId);
+        Task<bool> RemoveLikeFromUserAsync(string userId, int likeId);
     }
 }
