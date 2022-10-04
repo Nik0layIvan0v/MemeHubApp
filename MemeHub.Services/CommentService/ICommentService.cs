@@ -6,20 +6,20 @@
     {
         Task<int> CreateParrentCommentAsync(string userId, int memeId, string commentContent);
 
-        Task<int> CreateChildCommentAsync(string userId, int memeId, string commentContent);
+        Task<int> CreateChildCommentAsync(string userId, int memeId, int parrentId, string commentContent);
 
-        Task<int> EditParrentCommentAsync(string userId, int memeId, int parrentCommentId, int childCommentId, string commentContent);
+        Task<int> EditParrentCommentAsync(string userId, int memeId, int parrentCommentId, string commentContent);
 
         Task<int> EditChildCommentAsync(string userId, int memeId, int parrentCommentId, int childCommentId, string commentContent);
 
         Task<int> DeleteParrentCommentByIdAsync(int parrentCommentId);
 
-        Task<int> DeleteChildCommentByIdAsync(int chidlCommentId);
+        Task<int> DeleteChildCommentByIdAsync(int parrentCommentId, int chidlCommentId);
 
         Task<int?> GetCommentsCountAsync(string userId, int memeId);
 
         Task<Comment> GetCommentByIdAsync(int commentId);
 
-        Task<List<Comment>> GetAllMemeComments();
+        Task<List<Comment>> GetAllMemeComments(int memeId);
     }
 }
