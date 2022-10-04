@@ -30,12 +30,12 @@
 
         public async Task<bool> DeleteCategoryAsync(int targetCategoryId, int newMemeCategoryId)
         {
-            if (targetCategoryId < 0)
+            if (targetCategoryId < MinDatabaseId)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, nameof(targetCategoryId)));
             }
 
-            if (newMemeCategoryId < 0)
+            if (newMemeCategoryId < MinDatabaseId)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, nameof(newMemeCategoryId)));
             }
@@ -111,7 +111,7 @@
 
         public async Task<bool> UpdateCategoryAsync(int id, string name)
         {
-            if (id < 0)
+            if (id < MinDatabaseId)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, nameof(id)));
             }
@@ -131,7 +131,7 @@
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            if (id < 0)
+            if (id < MinDatabaseId)
             {
                 throw new ArgumentNullException(string.Format(IdLessThanZeroExceptionMessage, id));
             }

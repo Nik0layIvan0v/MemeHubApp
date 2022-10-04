@@ -61,7 +61,7 @@
         //TODO: Add check if user own the meme or is administrator!
         public async Task<bool> DeleteMemeAsync(int targetMemeId)
         {
-            if (targetMemeId <= 0)
+            if (targetMemeId < MinDatabaseId)
             {
                 throw new InvalidDataException($"{nameof(targetMemeId)} cannot be less than zero!");
             }
@@ -80,7 +80,7 @@
 
         public async Task<MemeServiceModel> GetMemeByIdAsync(int targetMemeId)
         {
-            if (targetMemeId <= 0)
+            if (targetMemeId < MinDatabaseId)
             {
                 throw new InvalidDataException($"{nameof(targetMemeId)} cannot be less than zero!");
             }
@@ -103,12 +103,12 @@
 
         public async Task<List<MemeServiceModel>> GetMemesAsync(int limit, int offset)
         {
-            if (limit <= 0)
+            if (limit < MinDatabaseId)
             {
                 throw new InvalidDataException($"{nameof(limit)} cannot be less than zero!");
             }
 
-            if (offset <= 0)
+            if (offset < MinDatabaseId)
             {
                 throw new InvalidDataException($"{nameof(offset)} cannot be less than zero!");
             }
@@ -118,7 +118,7 @@
                                                    .Take(limit)
                                                    .Select(meme => new MemeServiceModel()
                                                    {
-
+                                                       //TODO: Create projection or return db model
                                                    })
                                                    .ToListAsync();
             return memes;
@@ -127,7 +127,7 @@
         //TODO: Add check if user own the meme or is administrator!
         public async Task<int?> UpdateMemeAsync(int targetMemeId, MemeFormViewModel memeInputFormView)
         {
-            if (targetMemeId <= 0)
+            if (targetMemeId < MinDatabaseId)
             {
                 throw new InvalidDataException($"{nameof(targetMemeId)} cannot be less than zero!");
             }

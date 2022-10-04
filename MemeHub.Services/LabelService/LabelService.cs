@@ -35,7 +35,7 @@
 
         public async Task<bool> DeleteLabelAsync(int labelId)
         {
-            if (labelId <= 0)
+            if (labelId < MinDatabaseId)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
             }
@@ -55,7 +55,7 @@
 
         public async Task<bool> UpdateLabelAsync(int labelId, string labelName)
         {
-            if (labelId <= 0)
+            if (labelId < MinDatabaseId)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
             }
@@ -87,7 +87,7 @@
 
         public async Task<Label?> GetLabelByIdAsync(int labelId)
         {
-            if (labelId <= 0)
+            if (labelId < MinDatabaseId)
             {
                 throw new InvalidOperationException(string.Format(IdLessThanZeroExceptionMessage, labelId));
             }
