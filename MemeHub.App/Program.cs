@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MemeHub.Database;
 namespace MemeHub.App
 {
     using MemeHub.Database;
@@ -66,6 +69,7 @@ namespace MemeHub.App
                     pattern: "{area:exists}/{controller=home}/{action=index}/{id?}");
                 endpoints.MapRazorPages();
             });
+                        app.UseAuthentication();;
 
             app.Run();
         }
