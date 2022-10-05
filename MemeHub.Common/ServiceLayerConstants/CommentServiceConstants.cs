@@ -4,6 +4,10 @@
     {
         public const int MinDatabaseId = 1;
         
+        public const string InvalidUser = "User is not in the database!";
+
+        public const string InvalidMeme = "Meme is not in the database!";
+
         public const string EmptyUserIdExceptionMessage = "UserId: Cannot be null or whitespace!";
 
         public const string EmptyCommentContentExceptionMessage = "Comment content: Cannot be null or whitespace!";

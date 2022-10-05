@@ -5,14 +5,22 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using MemeHub.Database;
+    using Microsoft.AspNetCore.Identity;
+    using MemeHub.Services.MemeService;
 
     public class CommentService : ICommentService
     {
-        private readonly MemeHubDbContext memeHubDb;
+        private readonly MemeHubDbContext memeHubDbContext;
+        private readonly UserManager<User> userManager;
+        private readonly IMemeService memeService;
 
-        public CommentService(MemeHubDbContext memeHubDb)
+        public CommentService(MemeHubDbContext memeHubDbContext,
+                              UserManager<User> userManager,
+                              IMemeService memeService)
         {
-            this.memeHubDb = memeHubDb;
+            this.memeHubDbContext = memeHubDbContext;
+            this.userManager = userManager;
+            this.memeService = memeService;
         }
 
         public async Task<int> CreateParrentCommentAsync(string userId, int memeId, string commentContent)
@@ -22,9 +30,21 @@
                 throw new ArgumentNullException(EmptyUserIdExceptionMessage);
             }
 
+            var user = await this.userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException(InvalidUser);
+            }
+
             if (memeId < MinDatabaseId)
             {
                 throw new ArgumentException(LessThanZeroMemeIdExceptionMessage);
+            }
+
+            var meme = this.memeService.GetMemeByIdAsync(memeId);
+            if (meme == null)
+            {
+                throw new InvalidOperationException(InvalidMeme);
             }
 
             if (string.IsNullOrWhiteSpace(commentContent) == true)
@@ -32,7 +52,17 @@
                 throw new ArgumentException(EmptyCommentContentExceptionMessage);
             }
 
-            return 1;
+            var comment = new Comment()
+            {
+                Meme = new Meme() { Id = meme.Id },
+                User = user,
+                Content = commentContent,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            await this.memeHubDbContext.Comments.AddAsync(comment);
+            await this.memeHubDbContext.SaveChangesAsync();
+            return comment.Id;
         }
 
         public async Task<int> CreateChildCommentAsync(string userId, int memeId, int parrentId, string commentContent)
