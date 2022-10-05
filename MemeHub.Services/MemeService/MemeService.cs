@@ -5,6 +5,7 @@
     using MemeHub.Services.CategoryService;
     using MemeHub.Services.LabelService;
     using MemeHub.ViewModels.MemeViewModels;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -15,17 +16,28 @@
         private readonly MemeHubDbContext memeHubDbContext;
         private readonly ICategoryService categoryService;
         private readonly ILabelService labelService;
+        private readonly UserManager<User> userManager;
 
-        public MemeService(MemeHubDbContext memeHubDbContext, ICategoryService categoryService, ILabelService labelService)
+        public MemeService(MemeHubDbContext memeHubDbContext, 
+               ICategoryService categoryService, 
+               ILabelService labelService,
+               UserManager<User> userManager)
         {
             this.memeHubDbContext = memeHubDbContext;
             this.categoryService = categoryService;
             this.labelService = labelService;
+            this.userManager = userManager;
         }
 
         public async Task<int?> CreateMemeAsync(string userId, MemeFormViewModel memeInputFormView)
         {
             if (string.IsNullOrWhiteSpace(userId) == true)
+            {
+                throw new InvalidOperationException(string.Format(EmptyUserId, userId));
+            }
+
+            var user = await this.userManager.FindByIdAsync(userId);
+            if (user == null)
             {
                 throw new InvalidOperationException(string.Format(EmptyUserId, userId));
             }
@@ -46,7 +58,7 @@
             var meme = new Meme()
             {
                 Title = memeInputFormView.Title,
-                UserId = userId,
+                User = user,
                 Category = category,
                 imageUrl = memeInputFormView.ImageUrl,
                 CreatedAt = DateTime.UtcNow,
