@@ -14,5 +14,15 @@
 
             return user.FindFirstValue(ClaimTypes.NameIdentifier);
         }
+
+        public static bool IsUserIsAdministrator(this ClaimsPrincipal user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return user.IsInRole("Administrator") == true;
+        }
     }
 }

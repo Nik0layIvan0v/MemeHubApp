@@ -173,5 +173,13 @@
             await this.memeHubDbContext.SaveChangesAsync();
             return meme.Id;
         }
+
+        private async Task<bool> IsMemeOwnedByUser(string userId, int memeId)
+        {
+            var result = await this.memeHubDbContext.Memes
+                                                    .Where(meme => (meme.Id == memeId) && (meme.UserId == userId))
+                                                    .FirstOrDefaultAsync();
+            return result != null;
+        }
     }
 }

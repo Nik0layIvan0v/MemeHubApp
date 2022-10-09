@@ -58,6 +58,8 @@
             {
                 return View("Error");
             }
+
+            var countOfChanges = await this.commentService.DeleteParrentCommentByIdAsync(1);
             
             return Ok();
         }

@@ -116,7 +116,17 @@
                 throw new ArgumentException(EmptyUserIdExceptionMessage);
             }
 
-            return 1;
+            var parretComent = await this.memeHubDbContext.Comments
+                                                          .Where(comment => comment.Id == parrentCommentId)
+                                                          .FirstOrDefaultAsync();
+            if (parretComent == null)
+            {
+                throw new InvalidOperationException("Comment not found!");
+            }
+
+            this.memeHubDbContext.Comments.Remove(parretComent);
+            var countOfChanges = await this.memeHubDbContext.SaveChangesAsync();
+            return countOfChanges;
         }
 
         public async Task<int> EditChildCommentAsync(string userId, int memeId, int parrentCommentId, int childCommentId, string commentContent)
