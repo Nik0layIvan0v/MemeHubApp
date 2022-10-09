@@ -1,6 +1,8 @@
 ﻿namespace MemeHub.App.Controllers
 {
+    using MemeHub.Database.Models;
     using MemeHub.Infrastructure.Extensions;
+    using MemeHub.Services.CategoryService;
     using MemeHub.Services.MemeService;
     using MemeHub.ViewModels.MemeViewModels;
     using Microsoft.AspNetCore.Authorization;
@@ -10,18 +12,27 @@
     public class MemeController : Controller
     {
         private readonly IMemeService memeService;
-        private readonly string userId;
+        private readonly ICategoryService categoryService;
 
-        public MemeController(IMemeService memeService)
+        public MemeController(IMemeService memeService, ICategoryService categoryService)
         {
-            this.userId  = this.User.GetLoggedInUserId();
             this.memeService = memeService;
+            this.categoryService = categoryService;
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var test = await this.categoryService.GetAllCategoriesAsync();
+            MemeFormViewModel meme = new MemeFormViewModel();
+            var categoryServiceModels = await this.categoryService.GetAllCategoriesAsync();
+            meme.Categories = categoryServiceModels.Select(cat => new CategoryViewModel()
+            {
+                Name = cat.Name,
+                Id = cat.Id,
+            }).ToList();
+
+            return View(meme);
         }
 
         [HttpPost]
@@ -29,11 +40,18 @@
         {
             if (ModelState.IsValid == false)
             {
+                var categoryServiceModels = await this.categoryService.GetAllCategoriesAsync();
+                formViewModel.Categories = categoryServiceModels.Select(cat => new CategoryViewModel()
+                {
+                    Name = cat.Name,
+                    Id = cat.Id,
+                }).ToList();
                 return View(formViewModel);
             }
 
-            await this.memeService.CreateMemeAsync(this.userId, formViewModel);
-            return View();
+            var userId = this.User.GetLoggedInUserId();
+            await this.memeService.CreateMemeAsync(userId, formViewModel);
+            return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController).Replace("Controller", string.Empty));
         }
     }
 }

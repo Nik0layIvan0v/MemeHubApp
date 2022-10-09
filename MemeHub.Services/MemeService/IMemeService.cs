@@ -13,5 +13,6 @@
         Task<MemeServiceModel> GetMemeByIdAsync(int memeId);
 
         Task<List<MemeServiceModel>> GetMemesAsync(int limit, int offset);
+
     }
 }

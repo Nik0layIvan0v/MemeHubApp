@@ -1,7 +1,37 @@
-﻿@{
+﻿@using MemeHub.ViewModels.MemeViewModels;
+@using MemeHub.App.Controllers;
+@model MemeFormViewModel
+@{
     ViewData["Title"] = "Create meme";
 }
 
 <div class="container">
     <h1>Create meme</h1>
+
+    <form asp-controller="@nameof(MemeController).Replace("Controller", string.Empty)"
+          asp-action="@nameof(MemeController.Create)" 
+          method="post">
+        <div class="form-group">
+            <label asp-for="Title">Title:</label>
+            <input asp-for="Title" class="form-control" type="text" placeholder="Meme title here...">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ImageUrl">Image url:</label>
+            <input asp-for="ImageUrl" class="form-control" type="text" placeholder="Meme image url here...">
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Categories">Category:</label>
+            <select asp-for="CategoryId" class="form-control">
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn">Create</button>
+    </form>
 </div>

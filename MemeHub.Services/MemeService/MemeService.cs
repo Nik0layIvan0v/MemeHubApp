@@ -18,8 +18,8 @@
         private readonly ILabelService labelService;
         private readonly UserManager<User> userManager;
 
-        public MemeService(MemeHubDbContext memeHubDbContext, 
-               ICategoryService categoryService, 
+        public MemeService(MemeHubDbContext memeHubDbContext,
+               ICategoryService categoryService,
                ILabelService labelService,
                UserManager<User> userManager)
         {
@@ -54,7 +54,12 @@
                 throw new InvalidOperationException(string.Format(CategoryNotFound, memeInputFormView.CategoryId));
             }
 
-            var label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId);
+            Label? label = null;
+            if (memeInputFormView.LabelId > 0)
+            {
+                label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId);
+            }
+
             var meme = new Meme()
             {
                 Title = memeInputFormView.Title,
