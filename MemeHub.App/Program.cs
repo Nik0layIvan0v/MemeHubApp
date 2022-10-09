@@ -57,7 +57,8 @@ namespace MemeHub.App
 
             app.UseAuthentication()
                .UseAuthorization()
-               .AddDefaultAdministrator();
+               .AddDefaultAdministrator()
+               .SeedDefaultCategories();
 
             app.UseEndpoints(endpoints =>
             {
