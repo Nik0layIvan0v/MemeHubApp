@@ -107,7 +107,7 @@
 
             var memeServiceModel = new MemeServiceModel()
             {
-                //TODO: Implement!
+                Id = meme.Id,
             };
 
             return memeServiceModel;

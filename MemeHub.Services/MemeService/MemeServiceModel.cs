@@ -2,5 +2,6 @@
 {
     public class MemeServiceModel
     {
+        public int Id { get; set; }
     }
 }

@@ -7,6 +7,7 @@
     using MemeHub.Database;
     using Microsoft.AspNetCore.Identity;
     using MemeHub.Services.MemeService;
+    using Microsoft.EntityFrameworkCore;
 
     public class CommentService : ICommentService
     {
@@ -41,7 +42,9 @@
                 throw new ArgumentException(LessThanZeroMemeIdExceptionMessage);
             }
 
-            var meme = this.memeService.GetMemeByIdAsync(memeId);
+            var meme = await this.memeHubDbContext.Memes
+                                                  .Where(meme => meme.Id == memeId)
+                                                  .FirstOrDefaultAsync();
             if (meme == null)
             {
                 throw new InvalidOperationException(InvalidMeme);
@@ -54,7 +57,7 @@
 
             var comment = new Comment()
             {
-                Meme = new Meme() { Id = meme.Id },
+                Meme = meme,
                 User = user,
                 Content = commentContent,
                 CreatedDate = DateTime.UtcNow

@@ -2,6 +2,7 @@
 {
     using MemeHub.Infrastructure.Extensions;
     using MemeHub.Services.CategoryService;
+    using MemeHub.Services.CommentService;
     using MemeHub.Services.LabelService;
     using MemeHub.Services.MemeService;
     using MemeHub.ViewModels;
@@ -15,16 +16,19 @@
         private readonly ILabelService labelService;
         private readonly ICategoryService categoryService;
         private readonly IMemeService memeService;
+        private readonly ICommentService commentService;
 
         public HomeController
         (
             ILabelService labelService,
             ICategoryService categoryService,
-            IMemeService memeService)
+            IMemeService memeService,
+            ICommentService commentService)
         {
             this.labelService = labelService;
             this.categoryService = categoryService;
             this.memeService = memeService;
+            this.commentService = commentService;
         }
 
         public async Task<IActionResult> Index()
@@ -35,18 +39,26 @@
         [Authorize]
         public async Task<IActionResult> About()
         {
-            //TEST Code for add meme! !!!ATTENTION!!! Log in as administrator or user id will be null!!!
-            string userId = this.User.GetLoggedInUserId();
-            await this.categoryService.CreateCategoryAsync("Test category");
-            var testFormViewModel = new MemeFormViewModel()
+            var meme = await this.memeService.GetMemeByIdAsync(1);
+            if (meme == null)
             {
-                CategoryId = 1,
-                ImageUrl = "https://englishonline.britishcouncil.org/wp-content/uploads/2021/11/image2-drake-posting-meme.jpg",
-                LabelId = 1,
-                Title = "Cool meme title"
-            };
+                return View("Error");
+            }
 
-            await this.memeService.CreateMemeAsync(userId, testFormViewModel);
+            var user = this.User.GetLoggedInUserId();
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            string content = "This meme is sooo cool";
+            
+            var commentId = await this.commentService.CreateParrentCommentAsync(user, meme.Id, content);
+            if (commentId <= 0)
+            {
+                return View("Error");
+            }
+            
             return Ok();
         }
 
