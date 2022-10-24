@@ -25,13 +25,12 @@ namespace MemeHub.App
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireDigit = false;
-
             })
              .AddRoles<IdentityRole>()
              .AddEntityFrameworkStores<MemeHubDbContext>();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter()
-                            .AddControllersWithViews(options => 
+                            .AddControllersWithViews(options =>
                              options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
             builder.Services.AddScopedServices();

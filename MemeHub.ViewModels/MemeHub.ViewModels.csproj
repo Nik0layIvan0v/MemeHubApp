@@ -10,4 +10,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CategoryViewModels\" />
+    <Folder Include="LabelViewModels\" />
+    <Folder Include="CommentViewModels\" />
+    <Folder Include="UserViewModels\" />
+  </ItemGroup>
+
 </Project>
