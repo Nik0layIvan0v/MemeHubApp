@@ -5,6 +5,7 @@
     using MemeHub.Services.LabelService;
     using MemeHub.Services.LikeService;
     using MemeHub.Services.MemeService;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class ServiceCollectionExtensions
@@ -29,6 +30,18 @@
         public static IServiceCollection AddSingletonServices(this IServiceCollection collection)
         {
             //Register here all singleton services here
+            return collection;
+        }
+
+        public static IServiceCollection ApplyRouteConfigurations(this IServiceCollection collection)
+        {
+            collection.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+                options.AppendTrailingSlash = true;
+            });
+
             return collection;
         }
     }

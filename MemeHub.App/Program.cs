@@ -36,6 +36,7 @@ namespace MemeHub.App
             builder.Services.AddScopedServices();
             builder.Services.AddTransientServices();
             builder.Services.AddSingletonServices();
+            builder.Services.ApplyRouteConfigurations();
 
             WebApplication app = builder.Build();
             if (app.Environment.IsDevelopment() == true)
