@@ -47,7 +47,13 @@ body {
 
 
 .meme-heading {
-    text-align: center;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin-top: 15px;
+    overflow: hidden;
+    font-size: 23px;
+    line-height: 25px;
+    height: 30px;
 }
 
 .meme-image {

@@ -64,7 +64,7 @@
             {
                 Title = memeInputFormView.Title,
                 User = user,
-                Category = new Category(category.Id, category.Name),
+                Category = new Category(category.Id, category.Name), // BUG!!!
                 imageUrl = memeInputFormView.ImageUrl,
                 CreatedAt = DateTime.UtcNow,
                 Label = label
@@ -189,7 +189,7 @@
                 throw new InvalidOperationException(string.Format(CategoryNotFound, memeInputFormView.CategoryId));
             }
 
-            var label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId);
+            var label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId); //BUG!!!
             meme.Title = memeInputFormView.Title;
             meme.Category = new Category(category.Id, category.Name);
             meme.imageUrl = memeInputFormView.ImageUrl;
