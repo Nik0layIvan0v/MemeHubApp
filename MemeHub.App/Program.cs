@@ -30,13 +30,15 @@ namespace MemeHub.App
              .AddEntityFrameworkStores<MemeHubDbContext>();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter()
-                            .AddControllersWithViews(options =>
-                             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+                            .AddControllersWithViews(options => 
+                                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+                            .AddRazorRuntimeCompilation();
 
             builder.Services.AddScopedServices();
             builder.Services.AddTransientServices();
             builder.Services.AddSingletonServices();
             builder.Services.ApplyRouteConfigurations();
+
 
             WebApplication app = builder.Build();
             if (app.Environment.IsDevelopment() == true)

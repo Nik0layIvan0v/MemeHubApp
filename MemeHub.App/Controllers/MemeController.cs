@@ -1,13 +1,12 @@
 ﻿namespace MemeHub.App.Controllers
 {
-    using static MemeHub.Common.ServiceLayerConstants.MemeServiceConstants;
     using MemeHub.Infrastructure.Extensions;
     using MemeHub.Services.CategoryService;
     using MemeHub.Services.MemeService;
     using MemeHub.ViewModels.MemeViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using MemeHub.Database.Models;
+    using static MemeHub.Common.ServiceLayerConstants.MemeServiceConstants;
 
     [Authorize]
     public class MemeController : WebController
@@ -70,9 +69,7 @@
 
             var meme = await this.memeService.GetMemeByIdAsync(id);
 
-            return Json(new MemeDetailsViewModel()
-            {
-            });
+            return View(meme);
         }
 
         [HttpGet]

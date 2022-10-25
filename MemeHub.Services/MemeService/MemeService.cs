@@ -64,7 +64,7 @@
             {
                 Title = memeInputFormView.Title,
                 User = user,
-                Category = category,
+                Category = new Category(category.Id, category.Name),
                 imageUrl = memeInputFormView.ImageUrl,
                 CreatedAt = DateTime.UtcNow,
                 Label = label
@@ -110,9 +110,18 @@
                 throw new InvalidDataException($"Meme with id: {targetMemeId} not found in the database!");
             }
 
+            var category = await categoryService.GetCategoryByIdAsync(meme.CategoryId);
+
             var memeServiceModel = new MemeServiceModel()
             {
                 Id = meme.Id,
+                Category = category,
+                CreatedAt = meme.CreatedAt.ToString(),
+                Creator = meme.User.UserName,
+                ImageUrl = meme.imageUrl,
+                Title = meme.Title,
+                Label = meme.Label.Name,
+                Likes = meme.Likes.Count
             };
 
             return memeServiceModel;
@@ -135,7 +144,18 @@
                                                    .Take(limit)
                                                    .Select(meme => new MemeServiceModel()
                                                    {
-                                                       //TODO: Create projection or return db model
+                                                       Id = meme.Id,
+                                                       Category = new CategoryServiceModel()
+                                                       {
+                                                           Id = meme.CategoryId,
+                                                           Name = meme.Category.CategoryName
+                                                       },
+                                                       CreatedAt = meme.CreatedAt.ToString(),
+                                                       Creator = meme.User.UserName,
+                                                       ImageUrl = meme.imageUrl,
+                                                       Title = meme.Title,
+                                                       Label = meme.Label.Name,
+                                                       Likes = meme.Likes.Count
                                                    })
                                                    .ToListAsync();
             return memes;
@@ -171,7 +191,7 @@
 
             var label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId);
             meme.Title = memeInputFormView.Title;
-            meme.Category = category;
+            meme.Category = new Category(category.Id, category.Name);
             meme.imageUrl = memeInputFormView.ImageUrl;
             meme.CreatedAt = DateTime.UtcNow;
             meme.Label = label;

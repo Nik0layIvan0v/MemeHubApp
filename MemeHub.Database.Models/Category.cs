@@ -11,6 +11,16 @@
             this.Memes = new HashSet<Meme>();
         }
 
+        public Category(int? id, string name)
+        {
+            if (id == null)
+            {
+                this.Id = Id;
+            }
+
+            this.CategoryName = name;
+        }
+
         [Required]
         [Unicode(true)]
         [MaxLength(MaxNameLength)]

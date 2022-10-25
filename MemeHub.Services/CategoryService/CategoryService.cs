@@ -129,7 +129,7 @@
             return countOfChanges > 0;
         }
 
-        public async Task<Category?> GetCategoryByIdAsync(int id)
+        public async Task<CategoryServiceModel?> GetCategoryByIdAsync(int? id)
         {
             if (id < MinDatabaseId)
             {
@@ -138,6 +138,7 @@
 
             return await memeHubDbContext.Categories
                                          .Where(cat => cat.Id == id)
+                                         .Select(cat => new CategoryServiceModel(cat.Id, cat.CategoryName))
                                          .FirstOrDefaultAsync();
         }
     }
