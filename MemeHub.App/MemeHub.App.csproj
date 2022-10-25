@@ -26,4 +26,10 @@
     <ProjectReference Include="..\MemeHub.ViewModels\MemeHub.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\img\no-image.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

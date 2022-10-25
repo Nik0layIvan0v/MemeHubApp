@@ -11,8 +11,7 @@
         public string Title { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [MaxLength(50)]
+        [MinLength(10)]
         [Display(Name = "Meme Image url: ")]
         public string ImageUrl { get; set; }
 

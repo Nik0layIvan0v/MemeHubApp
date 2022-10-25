@@ -1,7 +1,47 @@
-﻿@{
+﻿@using MemeHub.Services.MemeService
+@{
     this.ViewData["Title"] = "Details";
 }
+@model MemeServiceModel
 
-<div class="container-lg">
-    asdasdasdfasdfasdfasdfasdfsa
+<div class="container meme">
+    <section class="meme-section">
+        <h1 class="meme-heading">@Model.Title</h1>
+    </section>
+    <section class="meme-section">
+        <div class="container-fluid meme-image">
+            @if (Model.ImageUrl.Contains("https") == true)
+            {
+                <img src="@Model.ImageUrl" alt="Meme image" />
+            }
+            else
+            {
+                <img src="~/img/no-image.gif" alt="no-image" />
+            }
+        </div>
+    </section>
+    <section class="meme-section">
+        <div class="container-fluid">
+            <p>
+                Category: @Model.Category.Name
+            </p>
+            <p>
+                Creator: @Model.Creator
+            </p>
+            <p>
+                Created at: @Model.CreatedAt
+            </p>
+            <p>
+                Label: @Model.Label
+            </p>
+        </div>
+    </section>
+    <section class="meme-section">
+        <section class="meme-buttons">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Get share link</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-danger">Delete</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-warning">Edit</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Back</a>
+        </section>
+    </section>
 </div>
