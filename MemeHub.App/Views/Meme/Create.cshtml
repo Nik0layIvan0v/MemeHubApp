@@ -1,6 +1,6 @@
 ﻿@using MemeHub.ViewModels.MemeViewModels;
 @using MemeHub.App.Controllers;
-@model MemeFormViewModel
+@model MemeUploadViewModel
 @{
     ViewData["Title"] = "Create meme";
 }
@@ -12,20 +12,14 @@
     <div class="container">
         <form asp-controller="@nameof(MemeController).Replace(nameof(Controller), string.Empty)"
               asp-action="@nameof(MemeController.Create)"
-              method="post">
-            <div class="form-group">
+              method="post" , enctype="multipart/form-data">
+            <div class="form-group pt-2">
                 <label asp-for="Title">Title:</label>
                 <input asp-for="Title" class="form-control" type="text" placeholder="Meme title here...">
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="ImageUrl">Image url:</label>
-                <input asp-for="ImageUrl" class="form-control" type="text" placeholder="Meme image url here...">
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
+            <div class="form-group pt-2">
                 <label asp-for="Categories">Category:</label>
                 <select asp-for="CategoryId" class="form-control">
                     @if ((Model.Categories is null) == false)
@@ -37,8 +31,17 @@
                     }
                 </select>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn">Create</button>
+
+            <div class="form-group pt-2">
+                <div class="custom-file">
+                    <label asp-for="Photo" class="custom-file-label">Choose file...</label>
+                    <input asp-for="Photo" class="form-control custom-file-input">
+                    <span asp-validation-for="Photo" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group pt-2 d-flex justify-content-center align-items-center">
+                <button type="submit" class="btn btn-dark center">Create</button>
             </div>
         </form>
     </div>

@@ -6,6 +6,7 @@
     using MemeHub.ViewModels.MemeViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Hosting;
     using static MemeHub.Common.ServiceLayerConstants.MemeServiceConstants;
 
     [Authorize]
@@ -13,18 +14,20 @@
     {
         private readonly IMemeService memeService;
         private readonly ICategoryService categoryService;
+        private readonly IWebHostEnvironment hostingEnvironment;
 
-        public MemeController(IMemeService memeService, ICategoryService categoryService)
+        public MemeController(IMemeService memeService, ICategoryService categoryService, IWebHostEnvironment hostingEnvironment)
         {
             this.memeService = memeService;
             this.categoryService = categoryService;
+            this.hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             var categories = await this.categoryService.GetAllCategoriesAsync();
-            var formView = new MemeFormViewModel()
+            var formView = new MemeUploadViewModel()
             {
                 Categories = categories
                             .Select(category => new CategoryViewModel()
@@ -38,7 +41,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(MemeFormViewModel formViewModel)
+        public async Task<IActionResult> Create(MemeUploadViewModel formViewModel)
         {
             if (ModelState.IsValid == false)
             {
@@ -53,8 +56,63 @@
                 return View(formViewModel);
             }
 
+            if ((formViewModel.Photo == null) || 
+                (formViewModel.Photo?.ContentType?.Contains("image") == false) ||
+                string.IsNullOrWhiteSpace(formViewModel.Photo?.FileName) == true)
+            {
+                ModelState.AddModelError("Photo", "Uploaded file must be valid image type!");
+                var categories = await this.categoryService.GetAllCategoriesAsync();
+                formViewModel.Categories = categories
+                .Select(category => new CategoryViewModel()
+                {
+                    Name = category.Name,
+                    Id = category.Id,
+                }).ToList();
+
+                return View(formViewModel);
+            }
+
             var userId = this.User.GetLoggedInUserId();
-            var createdMemeId = await this.memeService.CreateMemeAsync(userId, formViewModel);
+            if (string.IsNullOrWhiteSpace(userId) == true)
+            {
+                throw new InvalidOperationException("Username is invalid!!!");
+            }
+
+            bool isUserDirectoryExist = false;
+            string rootFolder = Path.Combine(this.hostingEnvironment.WebRootPath, "img");
+            var directories = Directory.GetDirectories(rootFolder);
+            foreach(var directory in directories)
+            {
+                if (directory.Contains(userId) == true)
+                {
+                    isUserDirectoryExist = true;
+                    break;
+                }
+            }
+
+            if (isUserDirectoryExist == false)
+            {
+                string userDirectory = Path.Combine(rootFolder, userId);
+                Directory.CreateDirectory(userDirectory);
+            }
+
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + formViewModel.Photo?.FileName;
+            string fullPath = Path.Combine(rootFolder, userId, uniqueFileName);
+            using var stream = new FileStream(fullPath, FileMode.CreateNew);
+
+            var memeServiceModel = new MemeFormViewModel()
+            {
+               ImageUrl = fullPath,
+               Title = formViewModel.Title,
+               CategoryId = formViewModel.CategoryId,
+               LabelId = formViewModel.LabelId,
+            };
+
+            var createdMemeId = await this.memeService.CreateMemeAsync(userId, memeServiceModel);
+            if ((createdMemeId != null) && (createdMemeId > 0))
+            {
+                await formViewModel?.Photo?.CopyToAsync(stream, CancellationToken.None);
+            }
 
             return this.RedirectToAction(nameof(MemeController.Details), GetControllerName<MemeController>(), new { id = createdMemeId });
         }
