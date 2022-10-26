@@ -1,27 +1,23 @@
 ﻿namespace MemeHub.Services.CommentService
 {
+    using MemeHub.Database;
     using MemeHub.Database.Models;
-    using static MemeHub.Common.ServiceLayerConstants.CommentServiceConstants;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using MemeHub.Database;
-    using Microsoft.AspNetCore.Identity;
-    using MemeHub.Services.MemeService;
-    using Microsoft.EntityFrameworkCore;
+    using static MemeHub.Common.ServiceLayerConstants.CommentServiceConstants;
 
     public class CommentService : ICommentService
     {
         private readonly MemeHubDbContext memeHubDbContext;
         private readonly UserManager<User> userManager;
-        private readonly IMemeService memeService;
 
         public CommentService(MemeHubDbContext memeHubDbContext,
-                              UserManager<User> userManager,
-                              IMemeService memeService)
+                              UserManager<User> userManager)
         {
             this.memeHubDbContext = memeHubDbContext;
             this.userManager = userManager;
-            this.memeService = memeService;
         }
 
         public async Task<int> CreateParrentCommentAsync(string userId, int memeId, string commentContent)

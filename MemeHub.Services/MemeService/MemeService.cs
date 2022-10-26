@@ -3,7 +3,6 @@
     using MemeHub.Database;
     using MemeHub.Database.Models;
     using MemeHub.Services.CategoryService;
-    using MemeHub.Services.LabelService;
     using MemeHub.ViewModels.MemeViewModels;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
@@ -14,18 +13,12 @@
     public class MemeService : IMemeService
     {
         private readonly MemeHubDbContext memeHubDbContext;
-        private readonly ICategoryService categoryService;
-        private readonly ILabelService labelService;
         private readonly UserManager<User> userManager;
 
         public MemeService(MemeHubDbContext memeHubDbContext,
-               ICategoryService categoryService,
-               ILabelService labelService,
                UserManager<User> userManager)
         {
             this.memeHubDbContext = memeHubDbContext;
-            this.categoryService = categoryService;
-            this.labelService = labelService;
             this.userManager = userManager;
         }
 
@@ -48,7 +41,10 @@
                 throw new InvalidOperationException(string.Format(EmptyImageUrl, memeInputFormView.ImageUrl));
             }
 
-            var category = await this.categoryService.GetCategoryByIdAsync(memeInputFormView.CategoryId);
+            var category = await this.memeHubDbContext.Categories
+                                                      .Where(category => category.Id == memeInputFormView.CategoryId)
+                                                      .FirstOrDefaultAsync();
+
             if (category == null)
             {
                 throw new InvalidOperationException(string.Format(CategoryNotFound, memeInputFormView.CategoryId));
@@ -57,14 +53,16 @@
             Label? label = null;
             if (memeInputFormView.LabelId > 0)
             {
-                label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId);
+                label = await this.memeHubDbContext.Labels
+                                                   .Where(label => label.Id == memeInputFormView.LabelId)
+                                                   .FirstOrDefaultAsync();
             }
 
             var meme = new Meme()
             {
                 Title = memeInputFormView.Title,
                 User = user,
-                Category = new Category(category.Id, category.Name), // BUG!!!
+                Category = category,
                 imageUrl = memeInputFormView.ImageUrl,
                 CreatedAt = DateTime.UtcNow,
                 Label = label
@@ -110,12 +108,14 @@
                 throw new InvalidDataException($"Meme with id: {targetMemeId} not found in the database!");
             }
 
-            var category = await categoryService.GetCategoryByIdAsync(meme.CategoryId);
+            var category = await this.memeHubDbContext.Categories
+                                          .Where(category => category.Id == meme.CategoryId)
+                                          .FirstOrDefaultAsync();
 
             var memeServiceModel = new MemeServiceModel()
             {
                 Id = meme.Id,
-                Category = category,
+                Category = new CategoryServiceModel(category.Id, category.CategoryName),
                 CreatedAt = meme.CreatedAt.ToString(),
                 Creator = meme.User.UserName,
                 ImageUrl = meme.imageUrl,
@@ -183,15 +183,17 @@
                 throw new InvalidDataException($"Meme with id: {targetMemeId} not found in the database!");
             }
 
-            var category = await this.categoryService.GetCategoryByIdAsync(memeInputFormView.CategoryId);
+            var category = await this.memeHubDbContext.Categories
+                                                      .Where(category => category.Id == meme.CategoryId)
+                                                      .FirstOrDefaultAsync();
             if (category == null)
             {
                 throw new InvalidOperationException(string.Format(CategoryNotFound, memeInputFormView.CategoryId));
             }
 
-            var label = await this.labelService.GetLabelByIdAsync(memeInputFormView.LabelId); //BUG!!!
+            var label = await this.memeHubDbContext.Labels.Where(label => label.Id == memeInputFormView.LabelId).FirstOrDefaultAsync();
             meme.Title = memeInputFormView.Title;
-            meme.Category = new Category(category.Id, category.Name);
+            meme.Category = category;
             meme.imageUrl = memeInputFormView.ImageUrl;
             meme.CreatedAt = DateTime.UtcNow;
             meme.Label = label;
